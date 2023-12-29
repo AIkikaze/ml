@@ -209,13 +209,68 @@ def classify(inputTree, featLabels, testVec, debug=False):
         classLabel = valueOfFeat
     return classLabel
 
-if __name__ == "__main__":
-    dataSet, labels = createDataSet()
-    # print(calShannonEnt(dataSet, debug=True))
-    # splitDataSet(dataSet, 2, 'no', debug=True)
-    # chooseBestFeatureToSplit(dataSet, debug=True)
-    # classList = [example[1] for example in dataSet]
-    # majorityCnt(classList, debug=True)
+vec = [False] * 100
+def print_tree(node, indent=0):
+    kids = list(node.keys())
 
+    while True:
+        if indent > 0:
+            for i in range(indent-1):
+                print("│   " if vec[i] else "    ", end="")
+            print("├── " if vec[indent-1] else "└── ", end="")
+
+        head_str = kids[0]
+        if not isinstance(node[head_str], dict):
+            print(f"{head_str} -> {node[head_str]}", end="\n")
+            return
+        else:
+            print(head_str, end="\n")
+            node = node[head_str]
+            kids = list(node.keys())
+
+        if len(kids) > 1: break
+        indent += 1
+
+    vec[indent] = True
+    print_tree({kids[0] : node[kids[0]]}, indent+1)
+    vec[indent] = False
+    print_tree({kids[1] : node[kids[1]]}, indent+1)
+
+def fishTest():
+    """对动物是否为鱼类分类的测试函数"""
+
+    # 1. 创建数据和结果标签
+    dataSet, labels = createDataSet()
+    # 2. 构建决策树
     tree = createTree(dataSet, labels)
-    print(classify(tree, labels, [1, 0], debug=True))
+    # 3. 进行预测
+    inst = [0, 0]
+    inst[0] = int(input(f"Is it {labels[0]}? [1/0]\n>> "))
+    inst[1] = int(input(f"Has {labels[1]}? [1/0]\n>> "))
+    print(f">> Is a fish? {classify(tree, labels, inst, debug=True)}.")
+    # 4. 输出决策树
+    print("----- Tree View -----")
+    print_tree(tree)
+
+def contactLensesTest():
+    """预测隐形眼镜的测试函数"""
+    import pandas as pd # type: ignore
+
+    # 1. 加载数据集和标签
+    labels = ["age", "prescript", "astigmatic", "tearRate", "target"]
+    df = pd.read_csv("3_decision/lenses.txt", sep='\t', names=labels)
+    dataSet = df.values.tolist()
+    # 2. 构建决策树
+    tree = createTree(dataSet, labels)
+    # 3. 进行预测
+    testVec = dataSet[:5]
+    y_predict = [classify(tree, labels, vec) for vec in testVec]
+    y = [example[4] for example in dataSet[:5]] 
+    # 4. 输出预测结果
+    print(f">> predict: {y_predict}\n>> answer:  {y}")
+    # 5. 输出决策树
+    print("----- Tree View -----")
+    print_tree(tree)
+
+if __name__ == "__main__":
+    contactLensesTest()
