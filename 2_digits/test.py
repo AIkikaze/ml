@@ -1,7 +1,7 @@
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier # type: ignore
+from sklearn.model_selection import train_test_split # type: ignore
+from sklearn.metrics import accuracy_score # type: ignore
+from sklearn.datasets import load_iris # type: ignore
 
 # 加载鸢尾花数据集
 iris = load_iris()

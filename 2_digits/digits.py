@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm # type: ignore
 
 def load(file_path):
     vec = np.zeros((32, 32))
