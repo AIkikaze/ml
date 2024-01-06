@@ -273,4 +273,4 @@ def contactLensesTest():
     print_tree(tree)
 
 if __name__ == "__main__":
-    contactLensesTest()
+    fishTest()
